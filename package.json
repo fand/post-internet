@@ -1,0 +1,23 @@
+{
+  "name": "post-internet",
+  "version": "0.0.0",
+  "description": "Postprocess the internet",
+  "main": "index.js",
+  "scripts": {
+    "precommit": "npm run build && git add build",
+    "build": "webpack",
+    "watch": "webpack -w",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "fand <fand.gmork@gmail.com> (https://gmork.in/)",
+  "license": "MIT",
+  "devDependencies": {
+    "husky": "^0.14.3",
+    "raw-loader": "^0.5.1",
+    "webpack": "^3.8.1"
+  },
+  "dependencies": {
+    "vedajs": "^0.1.2"
+  }
+}
