@@ -120,6 +120,10 @@ class App extends React.Component<any, IState> {
     this.setState({ shader: { ...this.state.shader, name: e.target.value } });
   }
 
+  onBlendChange = (e) => {
+    this.setState({ shader: { ...this.state.shader, blend: e.target.value } });
+  }
+
   setCanvas = (el) => {
     this.canvas = el;
   }
@@ -129,6 +133,7 @@ class App extends React.Component<any, IState> {
       id: Date.now().toString(),
       name: `effect ${Object.keys(this.state.shaders).length}`,
       code: EMPTY_SHADER_CODE,
+      blend: 'difference',
     };
     this.store.save(shader);
     const shaders = this.store.getShaders();
@@ -167,7 +172,7 @@ class App extends React.Component<any, IState> {
     return (
       <div>
         <Wrapper>
-          <h1>post-internet</h1>
+          <h1>Post Internet</h1>
           <Sidebar>
             <h3>Effects</h3>
             <ul>
@@ -186,6 +191,26 @@ class App extends React.Component<any, IState> {
                 value={shader.name}
                 onChange={this.onNameChange}
               />
+              &nbsp;&nbsp;
+              blend: <select value={shader.blend} onChange={this.onBlendChange}>
+                <option value="difference">difference</option>
+                <option value="normal">normal</option>
+                <option value="multiply">multiply</option>
+                <option value="screen">screen</option>
+                <option value="overlay">overlay</option>
+                <option value="darken">darken</option>
+                <option value="lighten">lighten</option>
+                <option value="color-dodge">color-dodge</option>
+                <option value="color-burn">color-burn</option>
+                <option value="hard-light">hard-light</option>
+                <option value="soft-light">soft-light</option>
+                <option value="difference">difference</option>
+                <option value="exclusion">exclusion</option>
+                <option value="hue">hue</option>
+                <option value="saturation">saturation</option>
+                <option value="color">color</option>
+                <option value="luminosity">luminosity</option>
+              </select>
             </p>
             <CodeMirror
               value={shader.code}

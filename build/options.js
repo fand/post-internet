@@ -3385,10 +3385,11 @@ var DEFAULT_SHADER_CODE = exports.DEFAULT_SHADER_CODE = __webpack_require__(5);
 var DEFAULT_SHADER = exports.DEFAULT_SHADER = {
   id: '0',
   name: 'melt-internet',
-  code: DEFAULT_SHADER_CODE
+  code: DEFAULT_SHADER_CODE,
+  blend: 'difference'
 };
 
-var EMPTY_SHADER_CODE = exports.EMPTY_SHADER_CODE = '\nprecision mediump float;\nuniform float time;\nuniform vec2 resolution;\nuniform sampler2D image;\n\nvoid main() {\n  vec2 uv = gl_FragCoord.xy / resolution;\n  gl_FragColor = texture2D(image, uv);\n}\n'.trim();
+var EMPTY_SHADER_CODE = exports.EMPTY_SHADER_CODE = '\nprecision mediump float;\nuniform float time;\nuniform vec2 resolution;\nuniform sampler2D image;\n\nvoid main() {\n  vec2 uv = gl_FragCoord.xy / resolution;\n  gl_FragColor = 1. - texture2D(image, uv);\n}\n'.trim();
 
 /***/ }),
 /* 4 */
@@ -3413,13 +3414,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var prefix = 'XXXPOSTINTERNETXXX';
 
+
+var DEFAULT_SHADERS = { '0': _constants.DEFAULT_SHADER };
+
 var Store = function () {
   function Store() {
     _classCallCheck(this, Store);
 
     var shaders = this._get('shaders');
     if (!shaders) {
-      this._set('shaders', { '0': _constants.DEFAULT_SHADER });
+      this._set('shaders', DEFAULT_SHADERS);
     }
 
     var activeShaderId = this._get('activeShaderId');
@@ -3431,13 +3435,13 @@ var Store = function () {
   _createClass(Store, [{
     key: 'getShaders',
     value: function getShaders() {
-      return this._get('shaders');
+      return this._get('shaders') || DEFAULT_SHADERS;
     }
   }, {
     key: 'getActiveShader',
     value: function getActiveShader() {
       var shaders = this.getShaders();
-      var activeShaderId = this._get('activeShaderId');
+      var activeShaderId = this._get('activeShaderId') || _constants.DEFAULT_SHADER.id;
       return shaders[activeShaderId];
     }
   }, {
@@ -18466,13 +18470,16 @@ var App = function (_React$Component) {
       _this.veda.loadFragmentShader(code);
     }, 100), _this.onNameChange = function (e) {
       _this.setState({ shader: _extends({}, _this.state.shader, { name: e.target.value }) });
+    }, _this.onBlendChange = function (e) {
+      _this.setState({ shader: _extends({}, _this.state.shader, { blend: e.target.value }) });
     }, _this.setCanvas = function (el) {
       _this.canvas = el;
     }, _this.add = function () {
       var shader = {
         id: Date.now().toString(),
         name: 'effect ' + Object.keys(_this.state.shaders).length,
-        code: _constants.EMPTY_SHADER_CODE
+        code: _constants.EMPTY_SHADER_CODE,
+        blend: 'difference'
       };
       _this.store.save(shader);
       var shaders = _this.store.getShaders();
@@ -18539,7 +18546,7 @@ var App = function (_React$Component) {
           _react2.default.createElement(
             'h1',
             null,
-            'post-internet'
+            'Post Internet'
           ),
           _react2.default.createElement(
             Sidebar,
@@ -18587,7 +18594,97 @@ var App = function (_React$Component) {
                 type: 'text',
                 value: shader.name,
                 onChange: this.onNameChange
-              })
+              }),
+              '\xA0\xA0 blend: ',
+              _react2.default.createElement(
+                'select',
+                { value: shader.blend, onChange: this.onBlendChange },
+                _react2.default.createElement(
+                  'option',
+                  { value: 'difference' },
+                  'difference'
+                ),
+                _react2.default.createElement(
+                  'option',
+                  { value: 'normal' },
+                  'normal'
+                ),
+                _react2.default.createElement(
+                  'option',
+                  { value: 'multiply' },
+                  'multiply'
+                ),
+                _react2.default.createElement(
+                  'option',
+                  { value: 'screen' },
+                  'screen'
+                ),
+                _react2.default.createElement(
+                  'option',
+                  { value: 'overlay' },
+                  'overlay'
+                ),
+                _react2.default.createElement(
+                  'option',
+                  { value: 'darken' },
+                  'darken'
+                ),
+                _react2.default.createElement(
+                  'option',
+                  { value: 'lighten' },
+                  'lighten'
+                ),
+                _react2.default.createElement(
+                  'option',
+                  { value: 'color-dodge' },
+                  'color-dodge'
+                ),
+                _react2.default.createElement(
+                  'option',
+                  { value: 'color-burn' },
+                  'color-burn'
+                ),
+                _react2.default.createElement(
+                  'option',
+                  { value: 'hard-light' },
+                  'hard-light'
+                ),
+                _react2.default.createElement(
+                  'option',
+                  { value: 'soft-light' },
+                  'soft-light'
+                ),
+                _react2.default.createElement(
+                  'option',
+                  { value: 'difference' },
+                  'difference'
+                ),
+                _react2.default.createElement(
+                  'option',
+                  { value: 'exclusion' },
+                  'exclusion'
+                ),
+                _react2.default.createElement(
+                  'option',
+                  { value: 'hue' },
+                  'hue'
+                ),
+                _react2.default.createElement(
+                  'option',
+                  { value: 'saturation' },
+                  'saturation'
+                ),
+                _react2.default.createElement(
+                  'option',
+                  { value: 'color' },
+                  'color'
+                ),
+                _react2.default.createElement(
+                  'option',
+                  { value: 'luminosity' },
+                  'luminosity'
+                )
+              )
             ),
             _react2.default.createElement(_reactCodemirror.UnControlled, {
               value: shader.code,

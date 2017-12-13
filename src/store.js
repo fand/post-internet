@@ -2,18 +2,39 @@
 const prefix = 'XXXPOSTINTERNETXXX';
 import { DEFAULT_SHADER, DEFAULT_SHADER_CODE } from './constants';
 
-type Shader = {
+type Blend = (
+  'normal' |
+  'multiply' |
+  'screen' |
+  'overlay' |
+  'darken' |
+  'lighten' |
+  'color-dodge' |
+  'color-burn' |
+  'hard-light' |
+  'soft-light' |
+  'difference' |
+  'exclusion' |
+  'hue' |
+  'saturation' |
+  'color' |
+  'luminosity'
+)
+export type Shader = {
   id: string;
   name: string;
   code: string;
+  blend: Blend;
 }
-type Shaders = { [id: string]: Shader };
+export type Shaders = { [id: string]: Shader };
+
+const DEFAULT_SHADERS = { '0': DEFAULT_SHADER };
 
 export default class Store {
   constructor() {
     const shaders = this._get('shaders');
     if (!shaders) {
-      this._set('shaders', { '0': DEFAULT_SHADER });
+      this._set('shaders', DEFAULT_SHADERS);
     }
 
     const activeShaderId = this._get('activeShaderId');
@@ -23,12 +44,12 @@ export default class Store {
   }
 
   getShaders(): Shaders {
-    return this._get('shaders');
+    return this._get('shaders') || DEFAULT_SHADERS;
   }
 
   getActiveShader(): Shader {
     const shaders = this.getShaders();
-    const activeShaderId = this._get('activeShaderId');
+    const activeShaderId = this._get('activeShaderId') || DEFAULT_SHADER.id;
     return shaders[activeShaderId];
   }
 

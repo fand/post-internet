@@ -41,8 +41,8 @@ window.chrome.runtime.onMessage.addListener(msg => {
       canvas.style.pointerEvents = 'none';
       canvas.style.margin = '0';
       canvas.style.padding = '0';
-      canvas.style.opacity = '0.5';
-      // canvas.style.mixBlendMode = 'difference';
+      // canvas.style.opacity = '0.5';
+      canvas.style.mixBlendMode = msg.shader.blend;
 
       body.appendChild(canvas);
 

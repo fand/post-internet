@@ -3344,10 +3344,11 @@ var DEFAULT_SHADER_CODE = exports.DEFAULT_SHADER_CODE = __webpack_require__(5);
 var DEFAULT_SHADER = exports.DEFAULT_SHADER = {
   id: '0',
   name: 'melt-internet',
-  code: DEFAULT_SHADER_CODE
+  code: DEFAULT_SHADER_CODE,
+  blend: 'difference'
 };
 
-var EMPTY_SHADER_CODE = exports.EMPTY_SHADER_CODE = '\nprecision mediump float;\nuniform float time;\nuniform vec2 resolution;\nuniform sampler2D image;\n\nvoid main() {\n  vec2 uv = gl_FragCoord.xy / resolution;\n  gl_FragColor = texture2D(image, uv);\n}\n'.trim();
+var EMPTY_SHADER_CODE = exports.EMPTY_SHADER_CODE = '\nprecision mediump float;\nuniform float time;\nuniform vec2 resolution;\nuniform sampler2D image;\n\nvoid main() {\n  vec2 uv = gl_FragCoord.xy / resolution;\n  gl_FragColor = 1. - texture2D(image, uv);\n}\n'.trim();
 
 /***/ }),
 /* 4 */
@@ -3372,13 +3373,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var prefix = 'XXXPOSTINTERNETXXX';
 
+
+var DEFAULT_SHADERS = { '0': _constants.DEFAULT_SHADER };
+
 var Store = function () {
   function Store() {
     _classCallCheck(this, Store);
 
     var shaders = this._get('shaders');
     if (!shaders) {
-      this._set('shaders', { '0': _constants.DEFAULT_SHADER });
+      this._set('shaders', DEFAULT_SHADERS);
     }
 
     var activeShaderId = this._get('activeShaderId');
@@ -3390,13 +3394,13 @@ var Store = function () {
   _createClass(Store, [{
     key: 'getShaders',
     value: function getShaders() {
-      return this._get('shaders');
+      return this._get('shaders') || DEFAULT_SHADERS;
     }
   }, {
     key: 'getActiveShader',
     value: function getActiveShader() {
       var shaders = this.getShaders();
-      var activeShaderId = this._get('activeShaderId');
+      var activeShaderId = this._get('activeShaderId') || _constants.DEFAULT_SHADER.id;
       return shaders[activeShaderId];
     }
   }, {
@@ -4964,8 +4968,8 @@ window.chrome.runtime.onMessage.addListener(function (msg) {
       canvas.style.pointerEvents = 'none';
       canvas.style.margin = '0';
       canvas.style.padding = '0';
-      canvas.style.opacity = '0.5';
-      // canvas.style.mixBlendMode = 'difference';
+      // canvas.style.opacity = '0.5';
+      canvas.style.mixBlendMode = msg.shader.blend;
 
       body.appendChild(canvas);
 
