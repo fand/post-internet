@@ -1,8 +1,3 @@
-/*{
-  "IMPORTED": {
-    "image": { "PATH": "./sample.png" },
-  },
-}*/
 precision mediump float;
 uniform float time;
 uniform vec2 resolution;
@@ -57,7 +52,6 @@ float triNoise2d(in vec2 p, float spd)
   }
   return clamp(1./pow(rz*29., 1.3),0.,.55);
 }
-
 
 void main() {
     vec2 uv = gl_FragCoord.xy / resolution;

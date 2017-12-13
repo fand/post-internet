@@ -1,17 +1,27 @@
+/* @flow */
 import Veda from 'vedajs';
-import shader from './shader.frag';
+import Store from './store';
+
 const ID = 'XXXPOSTINTERNETXXX';
 
-if (!window.veda) {
-  window.veda = new Veda();
+if (!window._____veda) {
+  window._____veda = new Veda({});
 }
-const veda = window.veda;
+const veda = window._____veda;
+
+if (!window._____store) {
+  window._____store = new Store();
+}
+const store = window._____store;
 
 const resize = () => {
   veda.resize(window.innerWidth, window.innerHeight);
 }
 
-chrome.runtime.onMessage.addListener(msg => {
+window.chrome.runtime.onMessage.addListener(msg => {
+  const body = document.body;
+  if (!body) { return; }
+
   if (msg.type === 'postinternet:load') {
     let canvas = document.getElementById(ID);
     if (canvas) {
@@ -31,21 +41,24 @@ chrome.runtime.onMessage.addListener(msg => {
       canvas.style.pointerEvents = 'none';
       canvas.style.margin = '0';
       canvas.style.padding = '0';
-      canvas.style.mixBlendMode = 'difference';
+      canvas.style.opacity = '0.5';
+      // canvas.style.mixBlendMode = 'difference';
 
-      document.body.appendChild(canvas);
+      body.appendChild(canvas);
 
       window.addEventListener('resize', resize);
 
       veda.loadTexture('image', msg.imageUrl);
       veda.setCanvas(canvas);
-      veda.loadFragmentShader(shader);
+      veda.loadFragmentShader(msg.shader.code);
       veda.play();
     }
   } else if (msg.type === 'postinternet:unload') {
     window.removeEventListener('resize', resize);
     veda.stop();
-    let canvas = document.getElementById(ID);
-    document.body.removeChild(canvas);
+    const canvas = document.getElementById(ID);
+    if (canvas) {
+      body.removeChild(canvas);
+    }
   }
 });
